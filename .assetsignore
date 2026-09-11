@@ -1,0 +1,15 @@
+.git/
+.github/
+.agents/
+.codex/
+.wrangler/
+.dev.vars*
+.env*
+.tmp-cf-reference/
+functions/
+migrations/
+worker.js
+wrangler.jsonc
+_routes.json
+README.md
+preview-desktop.png

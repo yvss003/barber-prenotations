@@ -274,18 +274,31 @@ async function getBookings(request, env) {
 
 async function login(request, env) {
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const { pin } = await readBody(request);
+  const enteredPin = String(pin || '').trim();
+  const configuredPin = String(env.ADMIN_PIN || '').trim();
+
+  if (!configuredPin) {
+    return json({ message: 'ADMIN_PIN non è configurato nel Worker Cloudflare.' }, 503);
+  }
+  if (!/^\d{6}$/.test(configuredPin)) {
+    return json({ message: 'ADMIN_PIN deve contenere esattamente 6 numeri, senza virgolette.' }, 503);
+  }
+
   const previous = await env.DB.prepare(
     'SELECT attempts,window_start FROM login_attempts WHERE ip=?',
   ).bind(ip).first();
   const now = Date.now();
-  if (
-    previous
-    && now - new Date(previous.window_start).getTime() < 15 * 60000
-    && previous.attempts >= 8
-  ) return json({ message: 'Troppi tentativi. Riprova tra 15 minuti.' }, 429);
+  const pinMatches = /^\d{6}$/.test(enteredPin)
+    && await safeEqual(enteredPin, configuredPin);
 
-  const { pin } = await readBody(request);
-  if (!/^\d{6}$/.test(String(pin)) || !await safeEqual(pin, env.ADMIN_PIN || '')) {
+  if (!pinMatches) {
+    if (
+      previous
+      && now - new Date(previous.window_start).getTime() < 15 * 60000
+      && previous.attempts >= 8
+    ) return json({ message: 'Troppi tentativi. Riprova tra 15 minuti.' }, 429);
+
     await env.DB.prepare(
       "INSERT INTO login_attempts(ip,attempts,window_start) VALUES(?,1,?) ON CONFLICT(ip) DO UPDATE SET attempts=CASE WHEN julianday(excluded.window_start)-julianday(window_start)>.0104 THEN 1 ELSE attempts+1 END,window_start=CASE WHEN julianday(excluded.window_start)-julianday(window_start)>.0104 THEN excluded.window_start ELSE window_start END",
     ).bind(ip, new Date().toISOString()).run();

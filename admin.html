@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#173f35" /><link rel="stylesheet" href="styles.css" /><link rel="stylesheet" href="admin.css" />
+  <title>Area barbiere — Abdul Barber</title>
+</head>
+<body class="admin-body">
+  <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">AB</span><span><strong>Abdul Barber</strong><small>Area riservata</small></span></a><a class="phone-link" href="index.html">Prenotazioni</a></header>
+  <main class="admin-main">
+    <section id="login-panel" class="admin-card login-card">
+      <p class="step-label">AREA BARBIERE</p><h1>Ciao Abdul 👋</h1><p class="muted">Inserisci il tuo PIN di 6 numeri.</p>
+      <form id="login-form"><label class="pin-label">PIN<input id="pin" class="pin-input" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="current-password" required placeholder="••••••" /></label><button class="primary-button" type="submit">Apri l’agenda</button><p id="login-error" class="error"></p></form>
+      <p id="demo-hint" class="demo-hint hidden"><strong>Modalità prova</strong><br>PIN: 123456</p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="dashboard-head"><div><p class="step-label">AGENDA</p><h1>Gli appuntamenti</h1></div><button id="logout" class="outline-button">Esci</button></div>
+      <nav class="day-switcher" aria-label="Scegli giorno"><button id="prev-day" aria-label="Giorno precedente">←</button><label class="calendar-jump"><strong id="selected-day"></strong><small>Tocca per aprire il calendario</small><input id="calendar-jump" type="date" aria-label="Vai direttamente a una data" /></label><button id="next-day" aria-label="Giorno successivo">→</button></nav>
+      <section class="agenda-summary"><div><strong id="day-count">0</strong><span>prenotati</span></div><div><strong id="next-time">—</strong><span>prossimo cliente</span></div><button id="go-today">Vai a oggi</button></section>
+      <div class="dashboard-grid">
+        <section class="admin-card"><div class="card-heading"><h2>Agenda del giorno</h2><button id="refresh" class="text-button">Aggiorna</button></div><div id="appointments" class="appointments"></div></section>
+        <aside>
+          <section class="admin-card block-card"><h2>Blocca un orario</h2><p class="muted">Per una pausa, un impegno o una chiusura.</p>
+            <form id="block-form"><label>Data<input id="block-date" type="date" required /></label><div class="two-cols"><label>Dalle<input id="block-start" type="time" required value="09:00" /></label><label>Alle<input id="block-end" type="time" required value="10:00" /></label></div><label>Motivo <span>(facoltativo)</span><input id="block-reason" maxlength="100" placeholder="Es. Visita medica" /></label><button class="primary-button" type="submit">Blocca questo orario</button><button id="block-whole-day" class="outline-button full-button" type="button">Blocca tutta la giornata</button><p id="block-error" class="error"></p></form>
+          </section>
+          <section class="admin-card block-card"><h2>Orari bloccati</h2><div id="blocks"></div></section>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script src="config.js"></script><script src="api.js"></script><script src="admin.js"></script>
+</body></html>

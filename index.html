@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173f35" />
+    <meta name="description" content="Prenota il tuo appuntamento da Abdul Barber a Reggio Emilia." />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Abdul Barber — Prenota</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Abdul Barber, pagina iniziale">
+        <span class="brand-mark" aria-hidden="true">AB</span>
+        <span><strong>Abdul Barber</strong><small>Reggio Emilia</small></span>
+      </a>
+      <div class="top-actions"><label class="language-picker" aria-label="Lingua"><span aria-hidden="true">🌐</span><select id="language-select"><option value="it">Italiano</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option></select></label><a class="phone-link" href="tel:+393294507407" aria-label="Chiama Abdul Barber" data-i18n="call">Chiama</a></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow" data-i18n="bookingOnline">PRENOTAZIONE ONLINE</p>
+        <h1><span data-i18n="heroTitle">Il tuo momento,</span><br /><em data-i18n="heroEm">senza attese.</em></h1>
+        <p data-i18n="heroText">Scegli il servizio e l'orario. Bastano meno di due minuti.</p>
+        <div class="shop-info">
+          <span>📍 Via del Follo 8/A, Reggio Emilia</span>
+          <span>🕘 <span data-i18n="today">Oggi</span>: <strong id="today-hours">calcolo…</strong></span>
+        </div>
+      </section>
+
+      <section class="booking-card" aria-labelledby="booking-title">
+        <div class="progress" aria-label="Avanzamento prenotazione">
+          <span class="progress-dot active" data-progress="1">1</span><i></i>
+          <span class="progress-dot" data-progress="2">2</span><i></i>
+          <span class="progress-dot" data-progress="3">3</span><i></i>
+          <span class="progress-dot" data-progress="4">4</span>
+        </div>
+
+        <div id="step-1" class="step active">
+          <p class="step-label" data-i18n="step1">PASSO 1 DI 4</p>
+          <h2 id="booking-title" data-i18n="what">Cosa vuoi fare?</h2>
+          <div class="service-grid">
+            <button class="service-card" data-service="haircut" type="button">
+              <span class="service-icon" aria-hidden="true">✂</span>
+              <span><strong data-i18n="haircut">Taglio di capelli</strong><small data-i18n="haircutTime">45 min + 5 min di margine</small></span>
+              <span class="arrow" aria-hidden="true">›</span>
+            </button>
+            <button class="service-card" data-service="beard" type="button">
+              <span class="service-icon" aria-hidden="true">♢</span>
+              <span><strong data-i18n="beard">Barba</strong><small data-i18n="beardTime">10 min + 5 min di margine</small></span>
+              <span class="arrow" aria-hidden="true">›</span>
+            </button>
+            <button class="service-card featured-service" data-service="combo" type="button">
+              <span class="service-icon" aria-hidden="true">✂+</span>
+              <span><strong data-i18n="combo">Taglio + barba</strong><small data-i18n="comboTime">55 min + 5 min di margine</small></span>
+              <span class="arrow" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="step-2" class="step">
+          <button class="back" type="button" data-back="1" data-i18n="back">← Indietro</button>
+          <p class="step-label" data-i18n="step2">PASSO 2 DI 4</p>
+          <h2 data-i18n="chooseDay">Scegli il giorno</h2>
+          <div id="date-list" class="date-list" role="list"></div>
+          <div id="time-area" class="time-area hidden">
+            <h3 data-i18n="available">Orari disponibili</h3>
+            <div id="time-list" class="time-list"></div>
+            <p id="time-message" class="muted" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div id="step-3" class="step">
+          <button class="back" type="button" data-back="2" data-i18n="back">← Indietro</button>
+          <p class="step-label" data-i18n="step3">PASSO 3 DI 4</p>
+          <h2 data-i18n="yourName">Come ti chiami?</h2>
+          <form id="details-form">
+            <label><span class="label-text" data-i18n="fullName">Nome e cognome</span><input id="customer-name" autocomplete="name" required minlength="2" placeholder="Es. Mario Rossi" data-i18n-placeholder="namePlaceholder" /></label>
+            <label><span class="label-text" data-i18n="phone">Numero di telefono</span><input id="customer-phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="Es. 333 123 4567" data-i18n-placeholder="phonePlaceholder" /></label>
+            <label><span class="label-text" data-i18n="notes">Note</span> <span data-i18n="optional">(facoltative)</span><textarea id="customer-notes" rows="2" maxlength="300" placeholder="Scrivi qui eventuali richieste" data-i18n-placeholder="notesPlaceholder"></textarea></label>
+            <button class="primary-button" type="submit" data-i18n="review">Controlla la prenotazione</button>
+          </form>
+        </div>
+
+        <div id="step-4" class="step">
+          <button class="back" type="button" data-back="3" data-i18n="edit">← Modifica</button>
+          <p class="step-label" data-i18n="step4">PASSO 4 DI 4</p>
+          <h2 data-i18n="allGood">Va tutto bene?</h2>
+          <div id="summary" class="summary"></div>
+          <label class="privacy-check"><input id="privacy" type="checkbox" /> <span><span data-i18n="privacyBefore">Ho letto l'</span><a href="privacy.html" target="_blank" data-i18n="privacyLink">informativa privacy</a><span data-i18n="privacyAfter"> e acconsento all'uso dei miei dati per gestire l'appuntamento.</span></span></label>
+          <button id="confirm-button" class="primary-button" type="button" data-i18n="confirm">Conferma prenotazione</button>
+          <p id="booking-error" class="error" role="alert"></p>
+        </div>
+
+        <div id="success" class="step success-panel">
+          <div class="success-icon">✓</div>
+          <p class="step-label" data-i18n="confirmed">PRENOTAZIONE CONFERMATA</p>
+          <h2 data-i18n="waiting">Ti aspettiamo!</h2>
+          <div id="success-summary" class="summary"></div>
+          <a id="whatsapp-confirm" class="primary-button calendar-button" href="#" target="_blank" rel="noreferrer" data-i18n="whatsappConfirm">Invia la conferma su WhatsApp</a>
+          <a id="calendar-link" class="secondary-button" href="#" download="appuntamento-abdul-barber.ics" data-i18n="calendar">Aggiungi al calendario</a>
+          <button id="new-booking" class="text-button" type="button" data-i18n="another">Fai un'altra prenotazione</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Abdul Barber</strong> · Via del Follo 8/A, Reggio Emilia</p>
+      <p><a href="tel:+393294507407">+39 329 450 7407</a> · <a href="admin.html" data-i18n="barberArea">Area barbiere</a></p>
+    </footer>
+    <script src="i18n.js"></script><script src="config.js"></script><script src="api.js"></script><script src="app.js"></script>
+  </body>
+</html>

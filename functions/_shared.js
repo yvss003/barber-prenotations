@@ -1,0 +1,10 @@
+export const SERVICES={haircut:{minutes:50,name:'Taglio di capelli'},beard:{minutes:15,name:'Barba'},combo:{minutes:60,name:'Taglio + barba'}};
+export const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
+export async function body(request){if(Number(request.headers.get('content-length')||0)>10000)throw new Error('Richiesta troppo grande');return request.json()}
+export function localParts(date){const p=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(date);return Object.fromEntries(p.map(x=>[x.type,x.value]))}
+export function zonedToUtc(date,hour,minute){const guess=new Date(`${date}T${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:00Z`);const p=localParts(guess),shown=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second),wanted=Date.UTC(+date.slice(0,4),+date.slice(5,7)-1,+date.slice(8,10),hour,minute,0);return new Date(guess.getTime()+(wanted-shown))}
+export function openMinute(weekday){return weekday===1?720:weekday===3?600:540}
+export function cookie(request,name){const all=request.headers.get('Cookie')||'';for(const part of all.split(';')){const[key,...rest]=part.trim().split('=');if(key===name)return decodeURIComponent(rest.join('='))}return''}
+export async function sha(value){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return[...new Uint8Array(bytes)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+export async function requireAdmin(context){const raw=cookie(context.request,'abdul_session');if(!raw)return null;const tokenHash=await sha(raw),row=await context.env.DB.prepare("select token_hash from admin_sessions where token_hash=? and expires_at>strftime('%Y-%m-%dT%H:%M:%fZ','now')").bind(tokenHash).first();return row?tokenHash:null}
+export function validRange(from,to){const a=new Date(from),b=new Date(to);return!Number.isNaN(+a)&&!Number.isNaN(+b)&&b>a&&b-a<=1000*60*60*24*32}

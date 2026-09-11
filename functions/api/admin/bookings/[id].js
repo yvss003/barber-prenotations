@@ -1,0 +1,2 @@
+import{json,body,requireAdmin}from'../../../_shared.js';
+export async function onRequestPatch(context){if(!await requireAdmin(context))return json({message:'Accesso scaduto'},401);const data=await body(context.request);if(data.status!=='cancelled')return json({message:'Stato non valido'},400);await context.env.DB.prepare("update bookings set status='cancelled' where id=?").bind(context.params.id).run();return json({ok:true})}

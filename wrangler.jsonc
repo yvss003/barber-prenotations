@@ -12,7 +12,9 @@
   },
   "d1_databases": [
     {
-      "binding": "DB"
+      "binding": "DB",
+      "database_name": "abdul-barber",
+      "database_id": "3c3f1e12-df6b-421a-a611-ca6227081718"
     }
   ],
   "secrets": {

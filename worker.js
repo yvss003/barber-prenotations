@@ -102,6 +102,25 @@ function openMinute(weekday) {
   return 9 * 60;
 }
 
+function pauseMinutes(weekday) {
+  return {
+    start: weekday === 5 ? 12 * 60 + 30 : 13 * 60,
+    end: 14 * 60,
+  };
+}
+
+function overlapsPause(startMinute, endMinute, weekday) {
+  const pause = pauseMinutes(weekday);
+  return startMinute < pause.end && endMinute > pause.start;
+}
+
+function normalizePhone(value) {
+  let digits = String(value || '').replace(/\D/g, '');
+  if (digits.startsWith('0039')) digits = digits.slice(4);
+  else if (digits.startsWith('39') && digits.length > 10) digits = digits.slice(2);
+  return digits;
+}
+
 function getCookie(request, name) {
   const all = request.headers.get('Cookie') || '';
   for (const part of all.split(';')) {
@@ -190,7 +209,7 @@ async function getSlots(request, env) {
 
   const slots = [];
   for (let minute = opening; minute + serviceConfig.minutes <= 19 * 60; minute += 15) {
-    if (minute < 14 * 60 && minute + serviceConfig.minutes > 13 * 60) continue;
+    if (overlapsPause(minute, minute + serviceConfig.minutes, weekday)) continue;
     const start = zonedToUtc(date, Math.floor(minute / 60), minute % 60);
     const end = new Date(+start + serviceConfig.minutes * 60000);
     if (start <= now) continue;
@@ -232,7 +251,7 @@ async function createBooking(request, env) {
     || +parts.minute % 15 !== 0
     || minute < opening
     || endMinute > 19 * 60
-    || (minute < 14 * 60 && endMinute > 13 * 60)
+    || overlapsPause(minute, endMinute, weekday)
   ) return json({ message: 'Orario non valido' }, 400);
 
   const id = crypto.randomUUID();
@@ -258,6 +277,50 @@ async function createBooking(request, env) {
     return json({ message: 'Questo orario non è più disponibile. Scegline un altro.' }, 409);
   }
   return json({ id, startAt: start.toISOString(), endAt: end.toISOString() }, 201);
+}
+
+async function getCustomerBookings(request, env) {
+  const data = await readBody(request);
+  const phone = normalizePhone(data.phone);
+  if (phone.length < 8 || phone.length > 15) {
+    return json({ message: 'Numero di telefono non valido' }, 400);
+  }
+
+  const rows = (await env.DB.prepare(
+    "SELECT id,service_id,customer_phone,start_at,end_at FROM bookings WHERE status='confirmed' AND start_at>? ORDER BY start_at",
+  ).bind(new Date().toISOString()).all()).results;
+
+  const bookings = rows
+    .filter((booking) => normalizePhone(booking.customer_phone) === phone)
+    .map(({ customer_phone, ...booking }) => booking);
+  return json({ bookings });
+}
+
+async function cancelCustomerBooking(request, env, id) {
+  const data = await readBody(request);
+  const phone = normalizePhone(data.phone);
+  if (phone.length < 8 || phone.length > 15) {
+    return json({ message: 'Numero di telefono non valido' }, 400);
+  }
+
+  const booking = await env.DB.prepare(
+    'SELECT id,customer_phone,start_at,status FROM bookings WHERE id=?',
+  ).bind(id).first();
+  if (!booking || normalizePhone(booking.customer_phone) !== phone) {
+    return json({ message: 'Appuntamento non trovato' }, 404);
+  }
+  if (booking.status !== 'confirmed') {
+    return json({ message: 'Questo appuntamento è già stato disdetto' }, 409);
+  }
+
+  const now = new Date().toISOString();
+  const result = await env.DB.prepare(
+    "UPDATE bookings SET status='cancelled' WHERE id=? AND status='confirmed' AND start_at>?",
+  ).bind(id, now).run();
+  if (!result.meta?.changes) {
+    return json({ message: 'Non è possibile disdire un appuntamento già iniziato' }, 409);
+  }
+  return json({ ok: true });
 }
 
 async function getBookings(request, env) {
@@ -387,6 +450,7 @@ function matchRoute(request) {
     'GET /api/slots': getSlots,
     'GET /api/bookings': getBookings,
     'POST /api/bookings': createBooking,
+    'POST /api/my-bookings': getCustomerBookings,
     'POST /api/admin/login': login,
     'POST /api/admin/logout': logout,
     'GET /api/admin/blocks': getBlocks,
@@ -398,6 +462,10 @@ function matchRoute(request) {
   const booking = path.match(/^\/api\/admin\/bookings\/([^/]+)$/);
   if (booking && request.method === 'PATCH') {
     return { handler: updateBooking, id: decodeURIComponent(booking[1]) };
+  }
+  const customerCancellation = path.match(/^\/api\/bookings\/([^/]+)\/cancel$/);
+  if (customerCancellation && request.method === 'POST') {
+    return { handler: cancelCustomerBooking, id: decodeURIComponent(customerCancellation[1]) };
   }
   const block = path.match(/^\/api\/admin\/blocks\/([^/]+)$/);
   if (block && request.method === 'DELETE') {

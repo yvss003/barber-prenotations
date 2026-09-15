@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173f35" />
+    <meta name="description" content="Gestisci o disdici un appuntamento da Abdul Barber." />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Disdici appuntamento — Abdul Barber</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="Abdul Barber, pagina iniziale"><span class="brand-mark" aria-hidden="true">AB</span><span><strong>Abdul Barber</strong><small>Reggio Emilia</small></span></a>
+      <div class="top-actions"><label class="language-picker" aria-label="Lingua"><span aria-hidden="true">🌐</span><select id="language-select"><option value="it">Italiano</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option></select></label><a class="phone-link" href="tel:+393294507407" data-i18n="call">Chiama</a></div>
+    </header>
+
+    <main class="simple-page">
+      <section class="booking-card simple-card" aria-labelledby="cancel-title">
+        <div id="cancel-search">
+          <p class="step-label" data-i18n="cancelEyebrow">GESTISCI PRENOTAZIONE</p>
+          <h1 id="cancel-title" data-i18n="cancelTitle">Trova il tuo appuntamento</h1>
+          <p class="simple-intro" data-i18n="cancelText">Inserisci lo stesso numero di telefono usato durante la prenotazione.</p>
+          <form id="lookup-form">
+            <label><span class="label-text" data-i18n="phone">Numero di telefono</span><input id="lookup-phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="Es. 333 123 4567" data-i18n-placeholder="phonePlaceholder" /></label>
+            <button id="lookup-button" class="primary-button" type="submit" data-i18n="searchBookings">Mostra i miei appuntamenti</button>
+          </form>
+          <p id="lookup-message" class="status-message" role="status" aria-live="polite"></p>
+          <div id="booking-results" class="booking-results"></div>
+        </div>
+        <div id="cancel-success" class="cancel-success hidden">
+          <div class="success-icon">✓</div>
+          <h1 data-i18n="cancelledTitle">Appuntamento disdetto</h1>
+          <p class="simple-intro" data-i18n="cancelledText">La disdetta è stata registrata e l’orario è tornato disponibile.</p>
+          <a class="primary-button" href="index.html" data-i18n="backToBooking">Torna alla prenotazione</a>
+        </div>
+      </section>
+    </main>
+
+    <footer><p><strong>Abdul Barber</strong> · Via del Follo 8/A, Reggio Emilia</p><p><a href="tel:+393294507407">+39 329 450 7407</a></p></footer>
+    <script src="i18n.js"></script><script src="config.js"></script><script src="api.js"></script><script src="cancel.js"></script>
+  </body>
+</html>

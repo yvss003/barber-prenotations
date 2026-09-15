@@ -10,7 +10,7 @@ const italianHour = date => Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Eu
 
 function isoDate(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
 function capital(text) { return text.charAt(0).toUpperCase()+text.slice(1); }
-function todayHours() { const day=new Date().getDay(); return day===1?'12:00–19:00':day===3?'10:00–19:00':'09:00–19:00'; }
+function todayHours() { const day=new Date().getDay(),open=day===1?'12:00':day===3?'10:00':'09:00',pause=day===5?'12:30–14:00':'13:00–14:00'; return `${open}–19:00 · ${I18n.t('pause')} ${pause}`; }
 
 function goTo(step) {
   state.step=step;
@@ -71,7 +71,7 @@ $('#confirm-button').addEventListener('click',async()=>{
 $('#new-booking').addEventListener('click',()=>location.reload());
 $('#today-hours').textContent=todayHours();
 $('#language-select').addEventListener('change',event=>I18n.apply(event.target.value));
-document.addEventListener('languagechange',()=>{if(state.serviceKey&&state.step===2)buildDates();if(state.startAt){$('#summary').innerHTML=summaryMarkup();$('#success-summary').innerHTML=summaryMarkup()}});
+document.addEventListener('languagechange',()=>{$('#today-hours').textContent=todayHours();if(state.serviceKey&&state.step===2)buildDates();if(state.startAt){$('#summary').innerHTML=summaryMarkup();$('#success-summary').innerHTML=summaryMarkup()}});
 I18n.apply(I18n.locale());
 if(isDemoMode()) console.info('Abdul Barber: modalità dimostrativa locale attiva.');
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});

@@ -1,4 +1,4 @@
-export const SERVICES={haircut:{minutes:50,name:'Taglio di capelli'},beard:{minutes:15,name:'Barba'},combo:{minutes:60,name:'Taglio + barba'}};
+export const SERVICES={haircut:{minutes:35,name:'Taglio di capelli'},beard:{minutes:10,name:'Barba'},combo:{minutes:45,name:'Taglio + barba'}};
 export const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
 export async function body(request){if(Number(request.headers.get('content-length')||0)>10000)throw new Error('Richiesta troppo grande');return request.json()}
 export function localParts(date){const p=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(date);return Object.fromEntries(p.map(x=>[x.type,x.value]))}

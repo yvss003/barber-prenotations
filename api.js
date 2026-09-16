@@ -1,9 +1,9 @@
 (function () {
 const CONFIG = window.ABDUL_CONFIG;
 const SERVICES = {
-  haircut: { id:'haircut', name:'Taglio di capelli', minutes:50 },
-  beard: { id:'beard', name:'Barba', minutes:15 },
-  combo: { id:'combo', name:'Taglio + barba', minutes:60 }
+  haircut: { id:'haircut', name:'Taglio di capelli', minutes:35 },
+  beard: { id:'beard', name:'Barba', minutes:10 },
+  combo: { id:'combo', name:'Taglio + barba', minutes:45 }
 };
 const demo = CONFIG.demoMode;
 const demoBookingsKey='abdul-barber-demo-bookings', demoBlocksKey='abdul-barber-demo-blocks';
@@ -14,7 +14,7 @@ const overlaps=(a,b,c,d)=>a<d&&b>c;
 function demoSlots(dateString,serviceKey){
   const duration=SERVICES[serviceKey].minutes,midday=new Date(`${dateString}T12:00:00`),weekday=midday.getDay(),openHour=weekday===1?12:weekday===3?10:9;
   const bookings=readLocal(demoBookingsKey).filter(b=>b.status==='confirmed'),blocks=readLocal(demoBlocksKey),now=new Date(),slots=[];
-  for(let minute=openHour*60;minute+duration<=19*60;minute+=15){
+  for(let minute=openHour*60;minute+duration<=19*60;minute+=5){
     const pauseStart=weekday===5?12*60+30:13*60;if(minute<14*60&&minute+duration>pauseStart)continue;
     const hh=String(Math.floor(minute/60)).padStart(2,'0'),mm=String(minute%60).padStart(2,'0'),start=new Date(`${dateString}T${hh}:${mm}:00`),end=new Date(start.getTime()+duration*60000);
     if(start<=now)continue;

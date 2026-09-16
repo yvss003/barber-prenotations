@@ -1,7 +1,7 @@
 const SERVICES = {
-  haircut: { minutes: 50, name: 'Taglio di capelli' },
-  beard: { minutes: 15, name: 'Barba' },
-  combo: { minutes: 60, name: 'Taglio + barba' },
+  haircut: { minutes: 35, name: 'Taglio di capelli' },
+  beard: { minutes: 10, name: 'Barba' },
+  combo: { minutes: 45, name: 'Taglio + barba' },
 };
 
 const SCHEMA = [
@@ -208,7 +208,7 @@ async function getSlots(request, env) {
   ).all()).results;
 
   const slots = [];
-  for (let minute = opening; minute + serviceConfig.minutes <= 19 * 60; minute += 15) {
+  for (let minute = opening; minute + serviceConfig.minutes <= 19 * 60; minute += 5) {
     if (overlapsPause(minute, minute + serviceConfig.minutes, weekday)) continue;
     const start = zonedToUtc(date, Math.floor(minute / 60), minute % 60);
     const end = new Date(+start + serviceConfig.minutes * 60000);
@@ -248,7 +248,7 @@ async function createBooking(request, env) {
   if (
     start <= now
     || start - now > 15 * 86400000
-    || +parts.minute % 15 !== 0
+    || +parts.minute % 5 !== 0
     || minute < opening
     || endMinute > 19 * 60
     || overlapsPause(minute, endMinute, weekday)

@@ -23,7 +23,7 @@ Il PIN non viene scritto nei file pubblici. L’accesso resta memorizzato in mod
 
 - Italiano, arabo con scrittura da destra a sinistra, francese e spagnolo.
 - Orari: lunedì 12–19, mercoledì 10–19, altri giorni 9–19; pausa 13–14.
-- Taglio 45 minuti più 5 di margine; barba 10 minuti più 5; taglio + barba 55 minuti più 5.
+- Taglio 35 minuti; barba 10 minuti; taglio + barba 45 minuti. Le partenze sono disponibili ogni 5 minuti quando l'intero servizio entra nell'orario libero.
 - Blocco automatico delle doppie prenotazioni.
 - Agenda quotidiana, conteggio clienti, prossimo cliente, chiamata e WhatsApp.
 - Blocco di un orario o di tutta una giornata.

@@ -4,7 +4,7 @@ export async function onRequestPost({request,env}){
     const data=await body(request),cfg=SERVICES[data.service],name=String(data.name||'').trim(),phone=String(data.phone||'').trim(),notes=String(data.notes||'').trim(),locale=['it','ar','fr','es'].includes(data.locale)?data.locale:'it',start=new Date(data.startAt);
     if(!cfg||name.length<2||name.length>100||phone.replace(/\D/g,'').length<8||phone.length>30||notes.length>300||Number.isNaN(+start))return json({message:'Controlla i dati inseriti'},400);
     const now=new Date(),p=localParts(start),minute=+p.hour*60 + +p.minute,weekday=start.getUTCDay(),opening=openMinute(weekday),endMinute=minute+cfg.minutes;
-    if(start<=now||start-now>15*86400000||+p.minute%5!==0||minute<opening||endMinute>1140||(minute<840&&endMinute>780))return json({message:'Orario non valido'},400);
+    if(start<=now||start-now>15*86400000||+p.minute%5!==0||opening===null||minute<opening||endMinute>1140||(minute<840&&endMinute>780))return json({message:'Orario non valido'},400);
     const id=crypto.randomUUID(),end=new Date(+start+cfg.minutes*60000);
     await env.DB.prepare("insert into bookings(id,service_id,customer_name,customer_phone,notes,start_at,end_at,status,locale) values(?,?,?,?,?,?,?,'confirmed',?)").bind(id,data.service,name,phone,notes||null,start.toISOString(),end.toISOString(),locale).run();
     return json({id,startAt:start.toISOString(),endAt:end.toISOString()},201);

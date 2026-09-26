@@ -10,7 +10,7 @@ const italianHour = date => Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Eu
 
 function isoDate(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
 function capital(text) { return text.charAt(0).toUpperCase()+text.slice(1); }
-function todayHours() { const day=new Date().getDay(),open=day===1?'12:00':day===3?'10:00':'09:00',pause=day===5?'12:30–14:00':'13:00–14:00'; return `${open}–19:00 · ${I18n.t('pause')} ${pause}`; }
+function todayHours() { const day=new Date().getDay();if(day===1)return I18n.t('closed');const open=day===3?'10:00':'09:00',pause=day===5?'12:30–14:00':'13:00–14:00'; return `${open}–19:00 · ${I18n.t('pause')} ${pause}`; }
 
 function goTo(step) {
   state.step=step;
@@ -25,6 +25,7 @@ function buildDates() {
   const list=$('#date-list'); list.innerHTML='';
   for(let i=0;i<14;i++){
     const date=new Date(); date.setHours(12,0,0,0); date.setDate(date.getDate()+i);
+    if(date.getDay()===1)continue;
     const parts=new Intl.DateTimeFormat(localeCode(),{weekday:'short',day:'numeric',month:'short'}).formatToParts(date);
     const val=isoDate(date); const button=document.createElement('button');
     button.type='button'; button.className='date-button'; button.dataset.date=val;
@@ -52,7 +53,7 @@ function escapeHtml(value) { const d=document.createElement('div'); d.textConten
 function calendarUrl() {
   const start=new Date(state.startAt), end=new Date(start.getTime()+SERVICES[state.serviceKey].minutes*60000);
   const stamp=d=>d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
-  const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Abdul Barber//Prenotazioni//IT','BEGIN:VEVENT',`DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,`SUMMARY:${I18n.t(state.serviceKey)} - Abdul Barber`,'LOCATION:Via del Follo 8/A, Reggio Emilia','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Abdul Barber//Prenotazioni//IT','BEGIN:VEVENT',`DTSTART:${stamp(start)}`,`DTEND:${stamp(end)}`,`SUMMARY:${I18n.t(state.serviceKey)} - Abdul Barber`,'LOCATION:Via Roma 56/A, Reggio Emilia','END:VEVENT','END:VCALENDAR'].join('\r\n');
   return URL.createObjectURL(new Blob([body],{type:'text/calendar'}));
 }
 

@@ -97,7 +97,7 @@ function zonedToUtc(date, hour, minute) {
 }
 
 function openMinute(weekday) {
-  if (weekday === 1) return 12 * 60;
+  if (weekday === 1) return null;
   if (weekday === 3) return 10 * 60;
   return 9 * 60;
 }
@@ -189,6 +189,7 @@ async function getSlots(request, env) {
   const midday = zonedToUtc(date, 12, 0);
   const weekday = midday.getUTCDay();
   const opening = openMinute(weekday);
+  if (opening === null) return json({ slots: [] });
   const dayStart = zonedToUtc(date, 0, 0);
   const dayEnd = zonedToUtc(date, 23, 59);
   const now = new Date();
@@ -249,6 +250,7 @@ async function createBooking(request, env) {
     start <= now
     || start - now > 15 * 86400000
     || +parts.minute % 5 !== 0
+    || opening === null
     || minute < opening
     || endMinute > 19 * 60
     || overlapsPause(minute, endMinute, weekday)

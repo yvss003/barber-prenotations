@@ -12,7 +12,7 @@ const writeLocal=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
 const overlaps=(a,b,c,d)=>a<d&&b>c;
 
 function demoSlots(dateString,serviceKey){
-  const duration=SERVICES[serviceKey].minutes,midday=new Date(`${dateString}T12:00:00`),weekday=midday.getDay(),openHour=weekday===1?12:weekday===3?10:9;
+  const duration=SERVICES[serviceKey].minutes,midday=new Date(`${dateString}T12:00:00`),weekday=midday.getDay();if(weekday===1)return[];const openHour=weekday===3?10:9;
   const bookings=readLocal(demoBookingsKey).filter(b=>b.status==='confirmed'),blocks=readLocal(demoBlocksKey),now=new Date(),slots=[];
   for(let minute=openHour*60;minute+duration<=19*60;minute+=5){
     const pauseStart=weekday===5?12*60+30:13*60;if(minute<14*60&&minute+duration>pauseStart)continue;

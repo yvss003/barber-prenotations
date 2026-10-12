@@ -1,7 +1,7 @@
 const SERVICES = {
   haircut: { minutes: 35, name: 'Taglio di capelli' },
   beard: { minutes: 15, name: 'Barba' },
-  combo: { minutes: 45, name: 'Taglio + barba' },
+  combo: { minutes: 50, name: 'Taglio + barba' },
 };
 
 const SCHEMA = [

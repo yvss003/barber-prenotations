@@ -2,8 +2,8 @@
 const CONFIG = window.ABDUL_CONFIG;
 const SERVICES = {
   haircut: { id:'haircut', name:'Taglio di capelli', minutes:35 },
-  beard: { id:'beard', name:'Barba', minutes:10 },
-  combo: { id:'combo', name:'Taglio + barba', minutes:45 }
+  beard: { id:'beard', name:'Barba', minutes:15 },
+  combo: { id:'combo', name:'Taglio + barba', minutes:50 }
 };
 const demo = CONFIG.demoMode;
 const demoBookingsKey='abdul-barber-demo-bookings', demoBlocksKey='abdul-barber-demo-blocks';

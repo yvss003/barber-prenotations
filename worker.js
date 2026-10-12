@@ -1,6 +1,6 @@
 const SERVICES = {
   haircut: { minutes: 35, name: 'Taglio di capelli' },
-  beard: { minutes: 10, name: 'Barba' },
+  beard: { minutes: 15, name: 'Barba' },
   combo: { minutes: 45, name: 'Taglio + barba' },
 };
 
